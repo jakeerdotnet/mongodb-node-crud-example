@@ -33,67 +33,56 @@ app.get('/', async (request, response) => {
 
 // Read (GET) a specific item by ID
 app.get('/:person', async (request, response) => {
-  let result = await getPerson(collection, JSON.parse(request.params.person))
-  response.send(result);
+  try {
+    await mongoClient.connect();
+    const result = await collection.find(JSON.parse(request.params.person)).toArray();
+    response.send(result);
+  } catch (error) { 
+    response.status(500).send({ message: error.message });
+  } finally { 
+    await mongoClient.close();
+  }
 });
 
 // POST method route
 app.post('/', async (request, response) => {
-  await insertPerson(collection, request.body);
-  response.send(request.body);
+  try {
+    await mongoClient.connect();
+    await insertPerson(collection, request.body);
+    response.send(request.body);
+  } catch (error) { 
+    response.status(500).send({ message: error.message })
+  } finally {
+    await mongoClient.close();  
+  }
 });
 
 // PUT method route
 app.put('/', async (request, response) => {
-  await updatePerson(collection, request.body.email, request.body);
-  response.send(request.body);
+  try {
+    await mongoClient.connect();
+    await updatePerson(collection, request.body.email, request.body);
+    response.send(request.body);
+  } catch (error) {
+    response.status(500).send({ message: error.message });
+  } finally {
+    await mongoClient.close();
+  }
 });
 
 // DELETE method route
 app.delete('/', async (request, response) => {
-  await deletePerson(collection, request.body);
-  response.send(request.body);
-});
-
-app.get('/random', async (request, response) => {
   try {
-    const results = await collection.aggregate([
-      { $sample: { size: 1 } }
-    ]).toArray();
-    response.send(results);
+    await mongoClient.connect();
+    await deletePerson(collection, request.body);
+    response.send(request.body);
   } catch (error) {
     response.status(500).send({ message: error.message });
+  } finally {
+    await mongoClient.close();
   }
 });
 
-app.get('/search', async (request, response) => {
-  const searchQuery = request.query.q;
-  try {
-    const results = await collection.aggregate([
-      {
-        $search: {
-          index: 'quotes-search-index',
-          text: {
-            query: searchQuery,
-            path: ['Quote', 'Author'],
-            fuzzy: {}
-          }
-        }
-      },
-      {
-        $limit: 10
-      },
-      {
-        $sort: {
-          popularity: -1
-        }
-      }
-    ]).toArray();
-    response.send(results);
-  } catch (error) {
-    response.status(500).send({ message: error.message });
-  }
-});
 
 app.listen(3000, async () => {
   try {
