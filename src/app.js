@@ -14,8 +14,8 @@ dotenv.config();
 
 const uri = process.env.DB_URI;
 const mongoClient = new MongoClient(uri, { serverApi: ServerApiVersion.v1, useNewUrlParser: true, useUnifiedTopology: true });
-const db = mongoClient.db('sample_mflix');
-const collection = db.collection('users');
+const db = mongoClient.db('Walkathon');
+const collection = db.collection('People');
 
 app.use(Express.json());
 
