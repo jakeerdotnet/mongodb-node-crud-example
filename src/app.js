@@ -14,27 +14,21 @@ dotenv.config();
 
 const uri = process.env.DB_URI;
 const mongoClient = new MongoClient(uri, { serverApi: ServerApiVersion.v1, useNewUrlParser: true, useUnifiedTopology: true });
-await mongoClient.connect(err => {
-  if (err) {
-      console.error('Error connecting to MongoDB:', err);
-      return;
-  }
-})
-
 const db = mongoClient.db('sample_mflix');
 const collection = db.collection('users');
 
 app.use(Express.json());
 
 app.get('/', async (request, response) => {
-  await mongoClient.connect(err => {
-    if (err) {
-        console.error('Error connecting to MongoDB:', err);
-        return;
-    }
-  })
-  let result = await getAllPerson(collection)
-  response.send(result);
+  try {
+    await mongoClient.connect();
+    const results = await collection.find().toArray();
+    response.send(results);
+  } catch (error) { 
+    response.status(500).send({ message: error.message });
+  } finally {
+    await mongoClient.close();
+  }
 });
 
 // Read (GET) a specific item by ID
