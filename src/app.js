@@ -32,10 +32,10 @@ app.get('/', async (request, response) => {
 });
 
 // Read (GET) a specific item by ID
-app.get('/:person', async (request, response) => {
+app.get('/person', async (request, response) => {
   try {
     await mongoClient.connect();
-    const result = await getPerson(collection, request.body.email);;
+    const result = await getPerson(collection, request.query.email);;
     response.send(result);
   } catch (error) { 
     response.status(500).send({ message: error.message });
