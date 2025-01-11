@@ -2,10 +2,10 @@
   "name": "mongodb-node-crud-example",
   "version": "1.0.0",
   "description": "Sample Node.js CRUD project for the MongoDB and npm article",
-  "main": "./src/index.js",
+  "main": "./src/app.js",
   "type": "module",
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "node ./src/app.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "repository": {
@@ -26,8 +26,11 @@
   },
   "homepage": "https://github.com/mongodb-developer/mongodb-node-crud-example#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-    "mongodb": "^4.2.1"
+    "express": "^4.21.2",
+    "mongodb": "^4.2.1",
+    "userland": "^0.4.3"
   },
   "devDependencies": {
     "jest": "^27.4.3"
