@@ -3,18 +3,18 @@ export const insertPerson = async (collection, person) => {
 }
 
 export const getAllPerson = async (collection) => {
-    return collection.find().toArray();
+    return await collection.find().toArray();
 }
 
-export async function getPerson(collection, person) {
-    return collection.find(person).toArray();
+export const getPerson = async(collection, emailId) => {
+    return await collection.find({ email: emailId }).collation({ locale: 'en', strength: 2 }).toArray();
 }
 
 export const updatePerson = async (collection, email, person) => {
     await collection.updateMany({ email: email }, { $set: person });
 }
 
-export const deletePerson = async (collection, personId) => {
-    await collection.deleteMany({ personId });
+export const deletePerson = async (collection, person) => {
+    await collection.deleteMany({ email: person.email });
 }
 

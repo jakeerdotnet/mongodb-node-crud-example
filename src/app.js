@@ -35,7 +35,7 @@ app.get('/', async (request, response) => {
 app.get('/:person', async (request, response) => {
   try {
     await mongoClient.connect();
-    const result = await collection.find(JSON.parse(request.params.person)).toArray();
+    const result = await getPerson(collection, request.body.email);;
     response.send(result);
   } catch (error) { 
     response.status(500).send({ message: error.message });
