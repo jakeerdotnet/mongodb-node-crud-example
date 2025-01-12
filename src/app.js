@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 import * as dotenv from 'dotenv';
 import Express from 'express';
 import cors from 'cors';
-import { getAllPerson, insertPerson, deletePerson, updatePerson, getPerson } from './peopleCrud.js';
+import { getAllPerson, insertPerson, deletePerson, updatePerson, getPerson, authenticate } from './peopleCrud.js';
 
 const app = Express();
 
@@ -36,6 +36,19 @@ app.get('/person', async (request, response) => {
   try {
     await mongoClient.connect();
     const result = await getPerson(collection, request.query.email);;
+    response.send(result);
+  } catch (error) { 
+    response.status(500).send({ message: error.message });
+  } finally { 
+    await mongoClient.close();
+  }
+});
+
+// Read (GET) a specific item by ID
+app.post('/authenticate', async (request, response) => {
+  try {
+    await mongoClient.connect();
+    const result = await authenticate(collection, request.body);;
     response.send(result);
   } catch (error) { 
     response.status(500).send({ message: error.message });

@@ -10,6 +10,10 @@ export const getPerson = async(collection, emailId) => {
     return await collection.find({ email: emailId }).collation({ locale: 'en', strength: 2 }).toArray();
 }
 
+export const authenticate = async(collection, person) => {
+    return await collection.find(person).toArray();
+}
+
 export const updatePerson = async (collection, email, person) => {
     await collection.updateMany({ email: email }, { $set: person });
 }
